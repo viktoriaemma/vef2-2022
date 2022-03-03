@@ -3,16 +3,21 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+
 const {
   DATABASE_URL: connectionString = 'postgres://:@localhost/vef2',
   NODE_ENV: nodeEnv = 'development',
 } = process.env;
-
 // Notum SSL tengingu við gagnagrunn ef við erum *ekki* í development
 // mode, á heroku, ekki á local vél
-const ssl = nodeEnv !== 'development' ? { rejectUnauthorized: false } : false;
+const ssl = nodeEnv !== 'development' ? {
+  rejectUnauthorized: false
+} : false;
 
-const pool = new pg.Pool({ connectionString, ssl });
+const pool = new pg.Pool({
+  connectionString,
+  ssl,
+});
 
 pool.on('error', (err) => {
   console.error('postgres error, exiting...', err);
@@ -41,4 +46,6 @@ async function main() {
   await pool.end();
 }
 
-main().catch((e) => { console.error(e); });
+main().catch((e) => {
+  console.error(e);
+});

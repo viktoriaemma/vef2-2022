@@ -19,9 +19,12 @@ import express from 'express';
 
 const app = express();
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({
+  extended: true
+}));
 
-function template(name = '', email = '', ssn = '') {
+
+function template(name = 'Rósalíta', email = '', ssn = '') {
   return `
   <form method="post" action="/post">
     <label>
@@ -48,21 +51,24 @@ function template(name = '', email = '', ssn = '') {
 }
 
 app.get('/', (req, res) => {
-  res.send(template());
+  res.send(template() + `<p>Hæ!</p>`);
 });
 
 app.post('/post', (req, res) => {
   const {
-    name = '',
-    email = '',
-    ssn = '',
+    name = '', // Skilast 'Rósalíta' ef því er ekki breytt. Næs virkni fyrir placeholder?
+      email = '',
+      ssn = '',
   } = req.body;
 
-  const errors = [];
+  const errors = []; // fylki til þess að safna villum
 
+  // Með þessum skilyrðum erum við að smíða validator frá grunni sjálf og það er ekki það sem við viljum gera
+  // viljum nota express-validator eins og í dæmi 09.data-validator.js
   if (name === '') {
     errors.push('Nafn má ekki vera tómt');
   }
+  //- [ ] ? Hvernig myndi það virka að hafa `email.indexOf('@') > 0` í samanburði við hitt? 🙋🏻‍♀️
 
   if (email === '' || email.indexOf('@') < 0) {
     errors.push('Netfang má ekki vera tómt og verður að innihalda @');
@@ -92,3 +98,4 @@ app.post('/post', (req, res) => {
 app.listen(3000, () => {
   console.log('Server running at http://127.0.0.1:3000/');
 });
+

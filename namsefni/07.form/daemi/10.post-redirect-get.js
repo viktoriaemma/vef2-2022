@@ -26,13 +26,15 @@ app.post('/post', (req, res) => {
   // Ef við afkommentum næstu síðu og refreshum í vafra munum við fá upp
   // „confirm form resubmission“ frá vafra
   // return res.send('Gögn móttekin!');
+  // - [ ] ? Fékk ekkert confirm resubmission? 🙋🏻‍♀️
+
 
   // Birtum ekki niðurstöðu, heldur redirectum á þakkar síðu
   res.redirect('/thanks');
 });
 
 app.get('/thanks', (req, res) => {
-  res.send('Gögn móttekin!');
+  res.send('Gögn móttekin!❤️');
 });
 
 app.listen(3000, () => {

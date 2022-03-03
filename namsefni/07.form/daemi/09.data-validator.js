@@ -17,12 +17,17 @@ Sjá frekar í skjölun: https://express-validator.github.io/docs/
 */
 
 import express from 'express';
-import { body, validationResult } from 'express-validator';
+import {
+  body,
+  validationResult
+} from 'express-validator';
 
 const app = express();
 
 // Nú verður req.body til
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({
+  extended: true
+}));
 
 const nationalIdPattern = '^[0-9]{6}-?[0-9]{4}$';
 
@@ -50,6 +55,10 @@ function template(name = '', email = '', nationalId = '') {
     <button>Senda</button>
   </form>
   `;
+  // Þó að við hefðum sent inn vitlaus gögn þá voru gildin kyrr í sínum input
+  // kössum því að `value=${name}`.
+  // Value fyrir inputtið varð strax að innsendingunni ef hún var puuuure (?) rétt?
+  // Svo að reitirnir séu ekki allir hreinsaðir út ef það kemur villa
 }
 
 app.get('/', (req, res) => {
@@ -58,24 +67,33 @@ app.get('/', (req, res) => {
 
 app.post(
   '/post',
-
+  // VALIDATION!!!!
   // Þetta er bara validation, ekki sanitization
-  body('name').isLength({ min: 1 }).withMessage('Nafn má ekki vera tómt'),
-  body('email').isLength({ min: 1 }).withMessage('Netfang má ekki vera tómt'),
+  body('name').isLength({ // erum að setja mörg middleware í svarið okkar
+    min: 1
+  }).withMessage('Nafn má ekki vera tómt'),
+  body('email').isLength({
+    min: 1
+  }).withMessage('Netfang má ekki vera tómt'),
   body('email').isEmail().withMessage('Netfang verður að vera gilt netfang'),
   body('nationalId')
-    .isLength({ min: 1 })
-    .withMessage('Kennitala má ekki vera tóm'),
+  .isLength({
+    min: 1
+  })
+  .withMessage('Kennitala má ekki vera tóm'),
   body('nationalId')
-    .matches(new RegExp(nationalIdPattern))
-    .withMessage('Kennitala verður að vera á formi 000000-0000 eða 0000000000'),
+  .matches(new RegExp(nationalIdPattern))
+  .withMessage('Kennitala verður að vera á formi 000000-0000 eða 0000000000'),
 
+  // Hérna erum við með middleware sem sér aðeins um það að prenta út villur ef það voru einhverjar villur
   (req, res, next) => {
-    const { name = '', email = '', nationalId = '' } = req.body;
+    const {
+      name = '', email = '', nationalId = ''
+    } = req.body;
 
     const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
+    if (!errors.isEmpty()) { // ef það eru validation villur þá er ekki einu sinni farið í næsta skref. next() er fyrir neðan þessa if-setningu
       const errorMessages = errors.array().map((i) => i.msg);
       return res.send(
         `${template(name, email, nationalId)}
@@ -86,9 +104,12 @@ app.post(
       `,
       );
     }
-
+// ef það voru engar villur þá keyrir þetta next() og þá er farið í næsta skref
     return next();
   },
+
+  // NÆSTA SKREFIÐ, next(), ER AÐ SANITIZE-A
+
   /* Nú sanitizeum við gögnin, þessar aðgerðir munu breyta gildum í body.req */
   // Fjarlægja whitespace frá byrjun og enda
   // „Escape“ á gögn, breytir stöfum sem hafa merkingu í t.d. HTML í entity
@@ -102,9 +123,16 @@ app.post(
   // skemma gögnin okkar, því kennitölur geta byrjað á 0
   body('nationalId').blacklist('-'),
 
-  (req, res) => {
-    const { name, email, nationalId } = req.body;
+  (req, res) => { // - [ ] ? Sanítesuruð gögn skorin niður og sett beint inní template, ekki í breytu og not stringified? 🙋🏻‍♀️
 
+    const {
+      name,
+      email,
+      nationalId
+    } = req.body;
+
+    //- [ ] SQUIRREL! HTML injection hér?
+    // Gögnin birt hér
     return res.send(`
       <p>Skráning móttekin!</p>
       <dl>
@@ -122,3 +150,6 @@ app.post(
 app.listen(3000, () => {
   console.log('Server running at http://127.0.0.1:3000/');
 });
+
+//- [ ] ? Hvar er HTML injection dæmið Er þessi kóði safe? 🙋🏻‍♀️
+// -[ ] ? Er þessi kóði safe ? 🙋🏻‍♀️

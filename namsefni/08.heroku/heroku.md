@@ -11,13 +11,24 @@ title: Heroku
 ---
 
 ## Heroku PaaS
+ 
+ // veb SaaS = Software as a service (SaaS) allows users to connect to and use cloud-based apps over the Internet. Common examples are email, calendaring, and office tools (such as Microsoft Office 365). SaaS provides a complete software solution that you purchase on a pay-as-you-go basis from a cloud service provider.
+ // veb Saas = Software as a service (SaaS /sæs/) is a software licensing and delivery model in which software is licensed on a subscription basis and is centrally hosted. SaaS is also known as "on-demand software" and Web-based/Web-hosted software.SaaS is considered to be part of cloud computing, along with infrastructure as a service (IaaS), platform as a service (PaaS), desktop as a service (DaaS), managed software as a service (MSaaS), mobile backend as a service (MBaaS), datacenter as a service (DCaaS), integration platform as a service (iPaaS), and information technology management as a service (ITMaaS). - Wikipedia
+
+
 
 * Heroku er _platform as a service_ (PaaS)
   * Keyrir ofan á AWS (Amazon Web Services)
+  * // veb aws er skýjaþjónusta þar sem þú getur provision-að eða búið til þínar eigin vélar sem geta síðan keyrt einhvern ákveðinn hugbúnað
 * Getum keyrt forritin okkar í „skýinu“
 * Þurfum ekki að hugsa um að reka vélar
-  * Keyrum forritið okkar sem „app“
+  * Keyrum forritið okkar sem „app“ // veb dyno kallað í gamla daga?
+  * // veb Heroku runs your app in lightweight, isolated Linux containers called "dynos." The platform offers different dyno types to help you get the best results for your type of app.
 
+// veb Heroku gefur okkur þægilegt viðmót til að búa til þessar vélar og manage-a þær á Amazon
+
+// veb getum keyrt okkar eigið software ofaná þessu Heroku platformi
+// veb hægt að keyra sitt eigið software ofaná platformi
 ***
 
 ## Heroku vefur
@@ -86,11 +97,12 @@ title: Heroku
 ***
 
 ## process.env
-
+// veb umhverfið er aðgengilegt í gegnum process.env - environment breytur sem eru sendar inn í keyrsluumhverfið
 * Við getum sent upplýsingar inní forritið okkar með því að skrifa breytur á undan keyrslu
   * `PORT=9999 node app.js`
 * Lesum síðan úr `process.env` sem er hlutur sem geymir allar umhverfisbreytur
   * `const port = env.process.PORT;`
+  * // veb í Heroku er það þannig að portinu er úthlutað þegar appinu er startað, vitum ekki hver talan er, t.d. '9999'
 
 ***
 
